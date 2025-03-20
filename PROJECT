@@ -7,4 +7,14 @@ layout:
 - go.kubebuilder.io/v4
 projectName: k8s-webhook-learning
 repo: github.com/sdischer-sap/webhook-learning
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: orchestrate.cloud.sap
+  group: friendly
+  kind: Greeter
+  path: github.com/sdischer-sap/webhook-learning/api/v1alpha1
+  version: v1alpha1
 version: "3"

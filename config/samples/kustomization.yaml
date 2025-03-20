@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- friendly_v1alpha1_greeter.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
