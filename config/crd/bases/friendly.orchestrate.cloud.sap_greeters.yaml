@@ -39,13 +39,18 @@ spec:
           spec:
             description: GreeterSpec defines the desired state of Greeter.
             properties:
-              foo:
-                description: Foo is an example field of Greeter. Edit greeter_types.go
-                  to remove/update
+              people:
                 type: string
             type: object
           status:
             description: GreeterStatus defines the observed state of Greeter.
+            properties:
+              amount_of_greetings:
+                format: int64
+                type: integer
+              last_greeting:
+                format: date-time
+                type: string
             type: object
         type: object
     served: true

@@ -25,17 +25,13 @@ import (
 
 // GreeterSpec defines the desired state of Greeter.
 type GreeterSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of Greeter. Edit greeter_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	People string `json:"people,omitempty"`
 }
 
 // GreeterStatus defines the observed state of Greeter.
 type GreeterStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	AmountOfGreetings int64       `json:"amount_of_greetings,omitempty"`
+	LastGreeting      metav1.Time `json:"last_greeting,omitempty"`
 }
 
 // +kubebuilder:object:root=true

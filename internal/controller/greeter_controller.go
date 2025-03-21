@@ -18,14 +18,19 @@ package controller
 
 import (
 	"context"
+	"time"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	"github.com/sdischer-sap/webhook-learning/api/v1alpha1"
 	friendlyv1alpha1 "github.com/sdischer-sap/webhook-learning/api/v1alpha1"
 )
+
+var requeueAfter = time.Duration(10 * time.Second)
 
 // GreeterReconciler reconciles a Greeter object
 type GreeterReconciler struct {
@@ -47,11 +52,26 @@ type GreeterReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.20.2/pkg/reconcile
 func (r *GreeterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	log := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	greeter := v1alpha1.Greeter{}
+	if err := r.Client.Get(ctx, req.NamespacedName, &greeter); err != nil {
+		return ctrl.Result{RequeueAfter: requeueAfter}, err
+	}
 
-	return ctrl.Result{}, nil
+	now := metav1.Now()
+	in10Secs := greeter.Status.LastGreeting.Add(time.Duration(10 * time.Second))
+
+	if (greeter.Status.LastGreeting == metav1.Time{}) || now.After(in10Secs) {
+		log.Info("Hello " + greeter.Spec.People)
+		greeter.Status.AmountOfGreetings++
+		greeter.Status.LastGreeting = metav1.Now()
+		if err := r.Client.Status().Update(ctx, &greeter); err != nil {
+			return ctrl.Result{RequeueAfter: requeueAfter}, err
+		}
+	}
+
+	return ctrl.Result{RequeueAfter: requeueAfter}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
