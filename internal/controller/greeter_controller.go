@@ -20,6 +20,7 @@ import (
 	"context"
 	"time"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -56,7 +57,10 @@ func (r *GreeterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 	greeter := v1alpha1.Greeter{}
 	if err := r.Client.Get(ctx, req.NamespacedName, &greeter); err != nil {
-		return ctrl.Result{RequeueAfter: requeueAfter}, err
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+		return ctrl.Result{}, err
 	}
 
 	now := metav1.Now()
@@ -67,7 +71,7 @@ func (r *GreeterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		greeter.Status.AmountOfGreetings++
 		greeter.Status.LastGreeting = metav1.Now()
 		if err := r.Client.Status().Update(ctx, &greeter); err != nil {
-			return ctrl.Result{RequeueAfter: requeueAfter}, err
+			return ctrl.Result{}, err
 		}
 	}
 
