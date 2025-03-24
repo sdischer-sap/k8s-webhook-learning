@@ -41,6 +41,7 @@ import (
 	friendlyv1beta1 "github.com/sdischer-sap/webhook-learning/api/v1beta1"
 	"github.com/sdischer-sap/webhook-learning/internal/controller"
 	webhookfriendlyv1alpha1 "github.com/sdischer-sap/webhook-learning/internal/webhook/v1alpha1"
+	webhookfriendlyv1beta1 "github.com/sdischer-sap/webhook-learning/internal/webhook/v1beta1"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -215,6 +216,13 @@ func main() {
 	// nolint:goconst
 	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
 		if err = webhookfriendlyv1alpha1.SetupGreeterWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Greeter")
+			os.Exit(1)
+		}
+	}
+	// nolint:goconst
+	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
+		if err = webhookfriendlyv1beta1.SetupGreeterWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Greeter")
 			os.Exit(1)
 		}
