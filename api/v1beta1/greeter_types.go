@@ -36,6 +36,7 @@ type GreeterStatus struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Greeter is the Schema for the greeters API.
 type Greeter struct {
