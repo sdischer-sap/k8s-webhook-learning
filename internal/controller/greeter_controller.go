@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -27,8 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/sdischer-sap/webhook-learning/api/v1alpha1"
-	friendlyv1alpha1 "github.com/sdischer-sap/webhook-learning/api/v1alpha1"
+	v1alpha1 "github.com/sdischer-sap/webhook-learning/api/v1beta1"
 )
 
 var requeueAfter = time.Duration(10 * time.Second)
@@ -67,7 +67,7 @@ func (r *GreeterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	in10Secs := greeter.Status.LastGreeting.Add(time.Duration(10 * time.Second))
 
 	if (greeter.Status.LastGreeting == metav1.Time{}) || now.After(in10Secs) {
-		log.Info("Hello " + greeter.Spec.People)
+		log.Info("Hello " + strings.Join(greeter.Spec.People, ", "))
 		greeter.Status.AmountOfGreetings++
 		greeter.Status.LastGreeting = metav1.Now()
 		if err := r.Client.Status().Update(ctx, &greeter); err != nil {
@@ -81,7 +81,7 @@ func (r *GreeterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 // SetupWithManager sets up the controller with the Manager.
 func (r *GreeterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&friendlyv1alpha1.Greeter{}).
+		For(&v1alpha1.Greeter{}).
 		Named("greeter").
 		Complete(r)
 }
