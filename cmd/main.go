@@ -38,6 +38,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	friendlyv1alpha1 "github.com/sdischer-sap/webhook-learning/api/v1alpha1"
+	friendlyv1beta1 "github.com/sdischer-sap/webhook-learning/api/v1beta1"
 	"github.com/sdischer-sap/webhook-learning/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
@@ -51,6 +52,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(friendlyv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(friendlyv1beta1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 

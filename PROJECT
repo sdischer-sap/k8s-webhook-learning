@@ -17,4 +17,12 @@ resources:
   kind: Greeter
   path: github.com/sdischer-sap/webhook-learning/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: orchestrate.cloud.sap
+  group: friendly
+  kind: Greeter
+  path: github.com/sdischer-sap/webhook-learning/api/v1beta1
+  version: v1beta1
 version: "3"
