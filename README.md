@@ -28,7 +28,10 @@ kubebuilder create api --group friendly --version v1beta1 --kind Greeter
 ```
 // +kubebuilder:storageversion
 ```
-
+**updatea manifests**
+```
+make manifests
+```
 
 
 Our Guidelines to be defined : 
