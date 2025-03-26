@@ -19,6 +19,8 @@ package v1alpha1
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -65,7 +67,9 @@ func (d *GreeterCustomDefaulter) Default(ctx context.Context, obj runtime.Object
 	}
 	greeterlog.Info("Defaulting for Greeter", "name", greeter.GetName())
 
-	// TODO(user): fill in your defaulting logic.
+	if greeter.Spec.People == "" {
+		greeter.Spec.People = "everybody"
+	}
 
 	return nil
 }
@@ -94,7 +98,7 @@ func (v *GreeterCustomValidator) ValidateCreate(ctx context.Context, obj runtime
 	}
 	greeterlog.Info("Validation for Greeter upon creation", "name", greeter.GetName())
 
-	// TODO(user): fill in your validation logic upon object creation.
+	// throw error if people field is not matching a comma separated list of names
 
 	return nil, nil
 }
@@ -123,4 +127,22 @@ func (v *GreeterCustomValidator) ValidateDelete(ctx context.Context, obj runtime
 	// TODO(user): fill in your validation logic upon object deletion.
 
 	return nil, nil
+}
+
+// validatePeopleField checks if the people field is a comma-separated list of names.
+func validatePeopleField(people string) error {
+	names := strings.Split(people, ",")
+	for _, name := range names {
+		name = strings.TrimSpace(name)
+		if !isValidName(name) {
+			return fmt.Errorf("invalid name in people field: %s", name)
+		}
+	}
+	return nil
+}
+
+// isValidName checks if a name contains only letters and spaces.
+func isValidName(name string) bool {
+	re := regexp.MustCompile(`^[a-zA-Z\s]+$`)
+	return re.MatchString(name)
 }
