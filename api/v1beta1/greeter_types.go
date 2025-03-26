@@ -39,6 +39,7 @@ type GreeterStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:storageversion
 // +kubebuilder:subresource:status
 
 // Greeter is the Schema for the greeters API.
@@ -51,7 +52,6 @@ type Greeter struct {
 }
 
 // +kubebuilder:object:root=true
-
 // GreeterList contains a list of Greeter.
 type GreeterList struct {
 	metav1.TypeMeta `json:",inline"`
